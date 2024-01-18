@@ -35,7 +35,7 @@ class DataProcessingService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("MainActivityabcf", "onStartCommand")
+//        Log.d("MainActivityabcf", "onStartCommand")
         processFileInBackground()
         return START_STICKY
     }
@@ -51,13 +51,7 @@ class DataProcessingService : Service() {
     }
 
     private fun readDataFromFile(): List<List<String>> {
-        // Implement logic to read data from the file
-        // Return a list of channels, each containing a list of sample values
-        // Example: List<List<Double>> = [[channel1], [channel2], [channel3], [channel4]]
-        // Declaring an input stream to read data
-
-//
-//        val data = """"""
+        //        val data = """"""
 //        val delim = "!"
 
         val wordsList = mutableListOf<String>()
@@ -69,7 +63,7 @@ class DataProcessingService : Service() {
             var line: String?
 
             while (bufferedReader.readLine().also { line = it } != null) {
-                var words = line?.split("\\s+".toRegex()) // Split the line into words
+                var words = line?.split("\\s+".toRegex())
                 if (words != null) {
                     words = words.reversed()
 //                    Log.d("converted_data_size", words.toString() + "   " + words.size.toString())
@@ -105,77 +99,50 @@ class DataProcessingService : Service() {
 //                Log.d("converted_data_", sample.toString())
 //        }
 
-
-//        val listOfLists: List<List<Double>> = listOf(
-//            listOf(1.0, 2.0, 3.0, 4.0),
-//            listOf(4.0, 5.0, 6.0, 4.0),
-//            listOf(7.0, 8.0, 9.0, 4.0),
-//            listOf(1.0, 2.0, 3.0, 4.0),
-//            listOf(4.0, 5.0, 6.0, 4.0),
-//            listOf(7.0, 8.0, 9.0, 4.0),
-//            listOf(1.0, 2.0, 3.0, 4.0),
-//            listOf(4.0, 5.0, 6.0, 4.0),
-//            listOf(7.0, 8.0, 9.0, 4.0),
-//            listOf(1.0, 2.0, 3.0, 4.0),
-//            listOf(4.0, 5.0, 6.0, 4.0),
-//            listOf(7.0, 8.0, 9.0, 4.0),
-//            listOf(1.0, 2.0, 3.0, 4.0),
-//            listOf(4.0, 5.0, 6.0, 4.0),
-//            listOf(7.0, 8.0, 9.0, 4.0),
-//            listOf(1.0, 2.0, 3.0, 4.0),
-//            listOf(4.0, 5.0, 6.0, 4.0),
-//            listOf(7.0, 8.0, 9.0, 4.0),
-//            listOf(1.0, 2.0, 3.0, 4.0),
-//            listOf(4.0, 5.0, 6.0, 4.0),
-//            listOf(7.0, 8.0, 9.0, 4.0),
-//            listOf(1.0, 2.0, 3.0, 4.0),
-//            listOf(4.0, 5.0, 6.0, 4.0),
-//            listOf(7.0, 8.0, 9.0, 4.0)
-//        )
-//
-//
-//        return listOfLists
         return channelData
     }
 
-    private suspend fun processAndDisplayData(data: List<List<String>>) = withContext(Dispatchers.Main) {
-        val startTime = System.currentTimeMillis()
+    private suspend fun processAndDisplayData(data: List<List<String>>) =
+        withContext(Dispatchers.Main) {
+            val startTime = System.currentTimeMillis()
 
-        for (i in data.indices step 10) {
-            val elapsedTime = System.currentTimeMillis() - startTime
-            Log.d("MainActivityabcindices", i.toString())
+            for (i in data.indices step 100) {
+                val elapsedTime = System.currentTimeMillis() - startTime
+//                Log.d("MainActivityabcindices", i.toString())
 
-            // Process each channel in parallel
-            val deferredList = ArrayList<Deferred<Double>>()
-            for (channelIndex in 0 until 4) {
-                val deferred = async(executor.asCoroutineDispatcher()) {
-                    // Decode channel data[channelIndex][i]
-                    // Example: Your decoding logic
-                    val hexValue = data[i][channelIndex]
-                    Integer.parseInt(hexValue, 16).toDouble() / 1000000.0 // Assuming voltage is in microvolts
+                // Process each channel in parallel
+                val deferredList = ArrayList<Deferred<Double>>()
+                for (channelIndex in 0 until 4) {
+                    val deferred = async(executor.asCoroutineDispatcher()) {
+                        val hexValue = data[i][channelIndex]
+                        Integer.parseInt(hexValue, 16)
+                            .toDouble() / 1000000.0 // Assuming voltage is in microvolts
+                    }
+                    deferredList.add(deferred)
                 }
-                deferredList.add(deferred)
+
+                val results = deferredList.awaitAll()
+
+                // Update UI with results
+                updateUI(results, elapsedTime)
+
+                // Delay for the next batch
+                delay(100)
             }
 
-            val results = deferredList.awaitAll()
-
-            // Update UI with results
-            updateUI(results, elapsedTime)
-
-            // Delay for the next batch
-            delay(100)
+            // Stop the service when processing is complete
+            stopSelf()
         }
-
-        // Stop the service when processing is complete
-        stopSelf()
-    }
 
     private fun updateUI(results: List<Double>, elapsedTime: Long) {
         // Implement logic to update UI with channel values
         // You can use a broadcast, EventBus, or other methods to communicate with the UI
         // Example: Send a broadcast with the results to the main activity
         val intent = Intent("amitapps.media.fetallitesensorapp")
-        intent.putExtra("decoded_results", results.toDoubleArray()) // Convert List<Double> to DoubleArray
+        intent.putExtra(
+            "decoded_results",
+            results.toDoubleArray()
+        ) // Convert List<Double> to DoubleArray
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
 
     }

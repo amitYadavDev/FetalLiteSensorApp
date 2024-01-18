@@ -43,21 +43,19 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(broadcastReceiver, IntentFilter("amitapps.media.fetallitesensorapp"))
     }
 
     private fun updateUI(decodedResults: DoubleArray?) {
-        // Update your UI components (e.g., TextViews) with the decoded results
         if (decodedResults != null) {
             val textView1 = findViewById<TextView>(R.id.text1)
             val textView2 = findViewById<TextView>(R.id.text2)
             val textView3 = findViewById<TextView>(R.id.text3)
             val textView4 = findViewById<TextView>(R.id.text4)
 
-            // Update your TextViews with the decoded results
             textView1.text = "${decodedResults[0]}"
             textView2.text = "${decodedResults[1]}"
             textView3.text = "${decodedResults[2]}"
