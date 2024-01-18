@@ -50,7 +50,7 @@ class DataProcessingService : Service() {
         }
     }
 
-    private fun readDataFromFile(): List<List<Double>> {
+    private fun readDataFromFile(): List<List<String>> {
         // Implement logic to read data from the file
         // Return a list of channels, each containing a list of sample values
         // Example: List<List<Double>> = [[channel1], [channel2], [channel3], [channel4]]
@@ -106,41 +106,42 @@ class DataProcessingService : Service() {
         }
 
 
-        val listOfLists: List<List<Double>> = listOf(
-            listOf(1.0, 2.0, 3.0, 4.0),
-            listOf(4.0, 5.0, 6.0, 4.0),
-            listOf(7.0, 8.0, 9.0, 4.0),
-            listOf(1.0, 2.0, 3.0, 4.0),
-            listOf(4.0, 5.0, 6.0, 4.0),
-            listOf(7.0, 8.0, 9.0, 4.0),
-            listOf(1.0, 2.0, 3.0, 4.0),
-            listOf(4.0, 5.0, 6.0, 4.0),
-            listOf(7.0, 8.0, 9.0, 4.0),
-            listOf(1.0, 2.0, 3.0, 4.0),
-            listOf(4.0, 5.0, 6.0, 4.0),
-            listOf(7.0, 8.0, 9.0, 4.0),
-            listOf(1.0, 2.0, 3.0, 4.0),
-            listOf(4.0, 5.0, 6.0, 4.0),
-            listOf(7.0, 8.0, 9.0, 4.0),
-            listOf(1.0, 2.0, 3.0, 4.0),
-            listOf(4.0, 5.0, 6.0, 4.0),
-            listOf(7.0, 8.0, 9.0, 4.0),
-            listOf(1.0, 2.0, 3.0, 4.0),
-            listOf(4.0, 5.0, 6.0, 4.0),
-            listOf(7.0, 8.0, 9.0, 4.0),
-            listOf(1.0, 2.0, 3.0, 4.0),
-            listOf(4.0, 5.0, 6.0, 4.0),
-            listOf(7.0, 8.0, 9.0, 4.0)
-        )
-
-
-        return listOfLists
+//        val listOfLists: List<List<Double>> = listOf(
+//            listOf(1.0, 2.0, 3.0, 4.0),
+//            listOf(4.0, 5.0, 6.0, 4.0),
+//            listOf(7.0, 8.0, 9.0, 4.0),
+//            listOf(1.0, 2.0, 3.0, 4.0),
+//            listOf(4.0, 5.0, 6.0, 4.0),
+//            listOf(7.0, 8.0, 9.0, 4.0),
+//            listOf(1.0, 2.0, 3.0, 4.0),
+//            listOf(4.0, 5.0, 6.0, 4.0),
+//            listOf(7.0, 8.0, 9.0, 4.0),
+//            listOf(1.0, 2.0, 3.0, 4.0),
+//            listOf(4.0, 5.0, 6.0, 4.0),
+//            listOf(7.0, 8.0, 9.0, 4.0),
+//            listOf(1.0, 2.0, 3.0, 4.0),
+//            listOf(4.0, 5.0, 6.0, 4.0),
+//            listOf(7.0, 8.0, 9.0, 4.0),
+//            listOf(1.0, 2.0, 3.0, 4.0),
+//            listOf(4.0, 5.0, 6.0, 4.0),
+//            listOf(7.0, 8.0, 9.0, 4.0),
+//            listOf(1.0, 2.0, 3.0, 4.0),
+//            listOf(4.0, 5.0, 6.0, 4.0),
+//            listOf(7.0, 8.0, 9.0, 4.0),
+//            listOf(1.0, 2.0, 3.0, 4.0),
+//            listOf(4.0, 5.0, 6.0, 4.0),
+//            listOf(7.0, 8.0, 9.0, 4.0)
+//        )
+//
+//
+//        return listOfLists
+        return channelData
     }
 
-    private suspend fun processAndDisplayData(data: List<List<Double>>) = withContext(Dispatchers.Main) {
+    private suspend fun processAndDisplayData(data: List<List<String>>) = withContext(Dispatchers.Main) {
         val startTime = System.currentTimeMillis()
 
-        for (i in data.indices) {
+        for (i in data.indices step 100) {
             val elapsedTime = System.currentTimeMillis() - startTime
             Log.d("MainActivityabcindices", i.toString())
 
@@ -150,7 +151,8 @@ class DataProcessingService : Service() {
                 val deferred = async(executor.asCoroutineDispatcher()) {
                     // Decode channel data[channelIndex][i]
                     // Example: Your decoding logic
-                    data[i][channelIndex]*10
+                    val hexValue = data[i][channelIndex]
+                    Integer.parseInt(hexValue, 16).toDouble() / 1000.0 // Assuming voltage is in millivolts
                 }
                 deferredList.add(deferred)
             }
@@ -161,7 +163,7 @@ class DataProcessingService : Service() {
             updateUI(results, elapsedTime)
 
             // Delay for the next batch
-            delay(8000)
+            delay(100)
         }
 
         // Stop the service when processing is complete
