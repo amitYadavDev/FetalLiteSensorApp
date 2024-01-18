@@ -101,9 +101,9 @@ class DataProcessingService : Service() {
 //        }
 
         // Print the converted data
-        channelData.forEach { sample ->
-                Log.d("converted_data_", sample.toString())
-        }
+//        channelData.forEach { sample ->
+//                Log.d("converted_data_", sample.toString())
+//        }
 
 
 //        val listOfLists: List<List<Double>> = listOf(
@@ -141,7 +141,7 @@ class DataProcessingService : Service() {
     private suspend fun processAndDisplayData(data: List<List<String>>) = withContext(Dispatchers.Main) {
         val startTime = System.currentTimeMillis()
 
-        for (i in data.indices step 100) {
+        for (i in data.indices step 10) {
             val elapsedTime = System.currentTimeMillis() - startTime
             Log.d("MainActivityabcindices", i.toString())
 
@@ -152,7 +152,7 @@ class DataProcessingService : Service() {
                     // Decode channel data[channelIndex][i]
                     // Example: Your decoding logic
                     val hexValue = data[i][channelIndex]
-                    Integer.parseInt(hexValue, 16).toDouble() / 1000.0 // Assuming voltage is in millivolts
+                    Integer.parseInt(hexValue, 16).toDouble() / 1000000.0 // Assuming voltage is in microvolts
                 }
                 deferredList.add(deferred)
             }

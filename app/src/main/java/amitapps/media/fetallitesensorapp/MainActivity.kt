@@ -32,9 +32,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         startService(Intent(this, DataProcessingService::class.java))
 
-
-
-
         // Start video playback in a VideoView or other component
         val videoView = findViewById<VideoView>(R.id.videoView)
         val videoPath = "android.resource://" + packageName + "/" + R.raw.video
@@ -46,8 +43,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(broadcastReceiver, IntentFilter("amitapps.media.fetallitesensorapp"))
     }
@@ -61,10 +58,10 @@ class MainActivity : AppCompatActivity() {
             val textView4 = findViewById<TextView>(R.id.text4)
 
             // Update your TextViews with the decoded results
-            textView1.text = "Channel 1: ${decodedResults[0]}"
-            textView2.text = "Channel 2: ${decodedResults[1]}"
-            textView3.text = "Channel 3: ${decodedResults[2]}"
-            textView4.text = "Channel 4: ${decodedResults[3]}"
+            textView1.text = "${decodedResults[0]}"
+            textView2.text = "${decodedResults[1]}"
+            textView3.text = "${decodedResults[2]}"
+            textView4.text = "${decodedResults[3]}"
         }
     }
 
