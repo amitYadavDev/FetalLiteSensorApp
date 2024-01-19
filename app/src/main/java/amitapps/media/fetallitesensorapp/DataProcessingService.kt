@@ -78,7 +78,7 @@ class DataProcessingService : Service() {
         }
 
         val channelData = wordsList.map { sample ->
-            Regex("[0-9A-F]{5}").findAll(sample).map { it.value }.toList()
+            Regex("[0-9A-F]{4}").findAll(sample).map { it.value }.toList()
         }
 
         // Extract samples and channel data
@@ -116,7 +116,7 @@ class DataProcessingService : Service() {
                     val deferred = async(executor.asCoroutineDispatcher()) {
                         val hexValue = data[i][channelIndex]
                         Integer.parseInt(hexValue, 16)
-                            .toDouble() / 1000000.0 // Assuming voltage is in microvolts
+                            .toDouble() / 1000.0 // Assuming voltage is in milli-volts
                     }
                     deferredList.add(deferred)
                 }
