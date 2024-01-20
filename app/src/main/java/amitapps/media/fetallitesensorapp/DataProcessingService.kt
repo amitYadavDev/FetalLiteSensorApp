@@ -61,13 +61,15 @@ class DataProcessingService : Service() {
             val bufferedReader = BufferedReader(inputStreamReader)
 
             var line: String?
+            var count = 0
 
             while (bufferedReader.readLine().also { line = it } != null) {
                 var words = line?.split("\\s+".toRegex())
                 if (words != null) {
+                    count++
                     words = words.reversed()
 //                    Log.d("converted_data_size", words.toString() + "   " + words.size.toString())
-
+                    if(count % 100 == 0)
                     wordsList.addAll(words)
                 }
             }
@@ -106,7 +108,7 @@ class DataProcessingService : Service() {
         withContext(Dispatchers.Main) {
             val startTime = System.currentTimeMillis()
 
-            for (i in data.indices step 100) {
+            for (i in data.indices) {
                 val elapsedTime = System.currentTimeMillis() - startTime
 //                Log.d("MainActivityabcindices", i.toString())
 
