@@ -1,19 +1,15 @@
 package amitapps.media.fetallitesensorapp
 
+import amitapps.media.fetallitesensorapp.databinding.ActivityMainBinding
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.TextView
 import android.widget.VideoView
+import androidx.databinding.DataBindingUtil
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     var decodedResults: DoubleArray? = null
@@ -26,10 +22,14 @@ class MainActivity : AppCompatActivity() {
             updateUI(decodedResults)
         }
     }
+    private var _binding: ActivityMainBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        _binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        
         startService(Intent(this, DataProcessingService::class.java))
 
         // Start video playback in a VideoView or other component
@@ -51,15 +51,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUI(decodedResults: DoubleArray?) {
         if (decodedResults != null) {
-            val textView1 = findViewById<TextView>(R.id.text1)
-            val textView2 = findViewById<TextView>(R.id.text2)
-            val textView3 = findViewById<TextView>(R.id.text3)
-            val textView4 = findViewById<TextView>(R.id.text4)
-
-            textView1.text = "${decodedResults[0]}"
-            textView2.text = "${decodedResults[1]}"
-            textView3.text = "${decodedResults[2]}"
-            textView4.text = "${decodedResults[3]}"
+            binding.text1.text = "${decodedResults[0]}"
+            binding.text2.text = "${decodedResults[1]}"
+            binding.text3.text = "${decodedResults[2]}"
+            binding.text4.text = "${decodedResults[3]}"
         }
     }
 
