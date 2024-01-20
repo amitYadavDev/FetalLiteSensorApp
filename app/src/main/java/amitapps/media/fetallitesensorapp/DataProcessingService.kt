@@ -131,14 +131,13 @@ class DataProcessingService : Service() {
                 delay(100)
             }
 
-            // Stop the service when processing is complete
+            // Stop the service when processing is completed
             stopSelf()
         }
 
     private fun updateUI(results: List<Double>, elapsedTime: Long) {
         // Implement logic to update UI with channel values
         // You can use a broadcast, EventBus, or other methods to communicate with the UI
-        // Example: Send a broadcast with the results to the main activity
         val intent = Intent("amitapps.media.fetallitesensorapp")
         intent.putExtra(
             "decoded_results",
