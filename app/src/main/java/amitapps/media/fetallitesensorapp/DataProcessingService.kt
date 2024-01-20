@@ -69,8 +69,7 @@ class DataProcessingService : Service() {
                     count++
                     words = words.reversed()
 //                    Log.d("converted_data_size", words.toString() + "   " + words.size.toString())
-                    if(count % 100 == 0)
-                    wordsList.addAll(words)
+                    if(count % 100 == 0)  wordsList.addAll(words)
                 }
             }
 
