@@ -32,11 +32,10 @@ class MainActivity : AppCompatActivity() {
         
         startService(Intent(this, DataProcessingService::class.java))
 
-        // Start video playback in a VideoView or other component
-        val videoView = findViewById<VideoView>(R.id.videoView)
+        // Start video playback in a VideoView
         val videoPath = "android.resource://" + packageName + "/" + R.raw.video
-        videoView.setVideoPath(videoPath)
-        videoView.setOnPreparedListener { mediaPlayer ->
+        binding.videoView.setVideoPath(videoPath)
+        binding.videoView.setOnPreparedListener { mediaPlayer ->
             mediaPlayer.isLooping = true
             mediaPlayer.start()
         }
