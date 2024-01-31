@@ -18,4 +18,6 @@ At the same time run the video in loop from the UI.
 
 So the final output when the app loads should be that a video is running with 4 text views below. The text views should get updated with the channel values for every 100th sample. (However, it is expected that all samples are processed). 
 
-# Working App
+# Working App (Video)
+https://github.com/amitYadavDev/FetalLiteSensorApp/assets/45551012/dd1c1822-937d-4722-9c63-11423c65408c
+
